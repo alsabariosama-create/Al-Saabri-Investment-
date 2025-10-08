@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار الاتصال - محفظة المستثمر</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+            direction: rtl;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        .test-button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #0056b3;
+        }
+        .data-display {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 10px 0;
+            direction: ltr;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .login-form {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .form-group {
+            margin: 15px 0;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            direction: ltr;
+        }
+        h1 { color: #333; text-align: center; }
+        h2 { color: #666; border-bottom: 2px solid #007bff; padding-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 اختبار الاتصال - محفظة المستثمر</h1>
+        
+        <div id="connectionStatus" class="status info">
+            جاري فحص الاتصال...
+        </div>
+
+        <h2>🔧 اختبار الاتصال بـ Firebase</h2>
+        <button class="test-button" onclick="testFirebaseConnection()">اختبار الاتصال</button>
+        <button class="test-button" onclick="testCardData()">اختبار بيانات البطاقة</button>
+        <button class="test-button" onclick="listAllCards()">عرض جميع البطاقات</button>
+        
+        <div id="testResults"></div>
+
+        <h2>🔑 اختبار تسجيل الدخول</h2>
+        <div class="login-form">
+            <div class="form-group">
+                <label>رقم البطاقة:</label>
+                <input type="text" id="testCardNumber" value="5647760321331212" placeholder="رقم البطاقة">
+            </div>
+            <div class="form-group">
+                <label>تاريخ الانتهاء (MM/YY):</label>
+                <input type="text" id="testExpiryDate" value="10/27" placeholder="MM/YY">
+            </div>
+            <div class="form-group">
+                <label>CVV:</label>
+                <input type="text" id="testCVV" value="548" placeholder="CVV">
+            </div>
+            <button class="test-button" onclick="testLogin()">اختبار تسجيل الدخول</button>
+        </div>
+
+        <h2>📊 بيانات الاختبار</h2>
+        <div id="dataDisplay" class="data-display">
+            لا توجد بيانات...
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDrZmZwSOVhonbLWGrHnctkV4tUcT7UNZM",
+            authDomain: "legal-department-dbd28.firebaseapp.com",
+            databaseURL: "https://legal-department-dbd28-default-rtdb.firebaseio.com",
+            projectId: "legal-department-dbd28",
+            storageBucket: "legal-department-dbd28.firebasestorage.app",
+            messagingSenderId: "452600951683",
+            appId: "1:452600951683:web:2929d22d53a309d947fcb6"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+
+        // المسارات الجديدة
+        const FIREBASE_USER_ID = 'OKGEqkARV0Ob8TQTNXnfke7KuI62';
+        const INVESTOR_CARD_ID = 'mgh6uik4b9fjpvdcoyu';
+        const CARDS_PATH = `users/${FIREBASE_USER_ID}/investorCards`;
+
+        // اختبار الاتصال بـ Firebase
+        async function testFirebaseConnection() {
+            const statusDiv = document.getElementById('connectionStatus');
+            const resultsDiv = document.getElementById('testResults');
+            
+            try {
+                statusDiv.className = 'status info';
+                statusDiv.textContent = 'جاري اختبار الاتصال...';
+                
+                // اختبار الاتصال بقاعدة البيانات
+                const testRef = database.ref('.info/connected');
+                const snapshot = await testRef.once('value');
+                
+                if (snapshot.val() === true) {
+                    statusDiv.className = 'status success';
+                    statusDiv.textContent = '✅ الاتصال بـ Firebase ناجح!';
+                    
+                    resultsDiv.innerHTML = '<div class="status success">تم الاتصال بقاعدة البيانات بنجاح</div>';
+                } else {
+                    throw new Error('فشل في الاتصال');
+                }
+            } catch (error) {
+                statusDiv.className = 'status error';
+                statusDiv.textContent = '❌ فشل في الاتصال بـ Firebase';
+                
+                resultsDiv.innerHTML = `<div class="status error">خطأ: ${error.message}</div>`;
+                console.error('خطأ في الاتصال:', error);
+            }
+        }
+
+        // اختبار بيانات البطاقة المحددة
+        async function testCardData() {
+            const resultsDiv = document.getElementById('testResults');
+            
+            try {
+                resultsDiv.innerHTML = '<div class="status info">جاري جلب بيانات البطاقة...</div>';
+                
+                const cardRef = database.ref(`${CARDS_PATH}/${INVESTOR_CARD_ID}`);
+                const snapshot = await cardRef.once('value');
+                const cardData = snapshot.val();
+                
+                if (cardData) {
+                    resultsDiv.innerHTML = '<div class="status success">✅ تم العثور على البطاقة!</div>';
+                    document.getElementById('dataDisplay').textContent = JSON.stringify(cardData, null, 2);
+                } else {
+                    resultsDiv.innerHTML = '<div class="status error">❌ لم يتم العثور على البطاقة</div>';
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="status error">خطأ: ${error.message}</div>`;
+                console.error('خطأ في جلب البيانات:', error);
+            }
+        }
+
+        // عرض جميع البطاقات
+        async function listAllCards() {
+            const resultsDiv = document.getElementById('testResults');
+            
+            try {
+                resultsDiv.innerHTML = '<div class="status info">جاري جلب جميع البطاقات...</div>';
+                
+                const cardsRef = database.ref(CARDS_PATH);
+                const snapshot = await cardsRef.once('value');
+                const cards = snapshot.val() || {};
+                
+                const cardsList = Object.keys(cards);
+                
+                if (cardsList.length > 0) {
+                    resultsDiv.innerHTML = `<div class="status success">✅ تم العثور على ${cardsList.length} بطاقة</div>`;
+                    document.getElementById('dataDisplay').textContent = JSON.stringify(cards, null, 2);
+                } else {
+                    resultsDiv.innerHTML = '<div class="status error">❌ لم يتم العثور على أي بطاقات</div>';
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="status error">خطأ: ${error.message}</div>`;
+                console.error('خطأ في جلب البطاقات:', error);
+            }
+        }
+
+        // اختبار تسجيل الدخول
+        async function testLogin() {
+            const resultsDiv = document.getElementById('testResults');
+            const cardNumber = document.getElementById('testCardNumber').value.replace(/\s+/g, '');
+            const expiryDate = document.getElementById('testExpiryDate').value;
+            const cvv = document.getElementById('testCVV').value;
+            
+            try {
+                resultsDiv.innerHTML = '<div class="status info">جاري اختبار تسجيل الدخول...</div>';
+                
+                const cardsRef = database.ref(CARDS_PATH);
+                const snapshot = await cardsRef.once('value');
+                const cards = snapshot.val() || {};
+                
+                // البحث عن البطاقة
+                let foundCard = null;
+                for (const cardId in cards) {
+                    const card = cards[cardId];
+                    
+                    // تنسيق تاريخ الانتهاء من قاعدة البيانات
+                    const dbDate = new Date(card.expiryDate);
+                    const formattedDbDate = `${(dbDate.getMonth() + 1).toString().padStart(2, '0')}/${dbDate.getFullYear().toString().substr(-2)}`;
+                    
+                    if (card.cardNumber === cardNumber && 
+                        formattedDbDate === expiryDate && 
+                        card.cvv === cvv) {
+                        foundCard = { id: cardId, ...card };
+                        break;
+                    }
+                }
+                
+                if (foundCard) {
+                    resultsDiv.innerHTML = '<div class="status success">✅ تسجيل الدخول ناجح!</div>';
+                    document.getElementById('dataDisplay').textContent = JSON.stringify(foundCard, null, 2);
+                } else {
+                    resultsDiv.innerHTML = '<div class="status error">❌ بيانات تسجيل الدخول غير صحيحة</div>';
+                    
+                    // عرض البيانات المتاحة للمقارنة
+                    const debugInfo = {
+                        'البيانات المدخلة': { cardNumber, expiryDate, cvv },
+                        'البطاقات المتاحة': Object.keys(cards).map(id => {
+                            const card = cards[id];
+                            const dbDate = new Date(card.expiryDate);
+                            const formattedDbDate = `${(dbDate.getMonth() + 1).toString().padStart(2, '0')}/${dbDate.getFullYear().toString().substr(-2)}`;
+                            return {
+                                id,
+                                cardNumber: card.cardNumber,
+                                expiryDate: formattedDbDate,
+                                cvv: card.cvv,
+                                investorName: card.investorName
+                            };
+                        })
+                    };
+                    document.getElementById('dataDisplay').textContent = JSON.stringify(debugInfo, null, 2);
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="status error">خطأ: ${error.message}</div>`;
+                console.error('خطأ في اختبار تسجيل الدخول:', error);
+            }
+        }
+
+        // اختبار الاتصال عند تحميل الصفحة
+        window.onload = function() {
+            setTimeout(testFirebaseConnection, 1000);
+        };
+    </script>
+</body>
+</html>
