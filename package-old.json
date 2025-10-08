@@ -81,83 +81,34 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
-        },
-        {
-          "target": "portable",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
-      "icon": "assets/IraqiInvestmentIcon.ico",
-      "requestedExecutionLevel": "asInvoker",
-      "publisherName": "Osama Al-Saabri",
-      "verifyUpdateCodeSignature": false
+      "icon": "assets/app-icon-new.ico"
+    },
+    "mac": {
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "assets/icons"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
-      "allowElevation": true,
-      "installerIcon": "assets/IraqiInvestmentIcon.ico",
-      "uninstallerIcon": "assets/IraqiInvestmentIcon.ico",
-      "installerHeaderIcon": "assets/IraqiInvestmentIcon.ico",
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "إدارة الاستثمار السعبري"
-    },
-    "mac": {
-      "target": [
-        {
-          "target": "dmg",
-          "arch": ["x64", "arm64"]
-        }
-      ],
-      "icon": "assets/app-icon.png",
-      "category": "public.app-category.finance"
-    },
-    "linux": {
-      "target": [
-        {
-          "target": "AppImage",
-          "arch": ["x64"]
-        },
-        {
-          "target": "deb",
-          "arch": ["x64"]
-        },
-        {
-          "target": "rpm",
-          "arch": ["x64"]
-        }
-      ],
-      "icon": "assets/app-icon.png",
-      "category": "Office",
-      "maintainer": "Osama Al-Saabri <alsabariosama@gmail.com>",
-      "vendor": "Al-Saabri Development",
-      "description": "نظام إدارة الاستثمار السعبري - تطبيق شامل لإدارة الاستثمارات والمستثمرين"
-    },
-    "dmg": {
-      "title": "إدارة الاستثمار السعبري",
-      "icon": "assets/app-icon.png",
-      "iconSize": 80,
-      "contents": [
-        {
-          "x": 130,
-          "y": 220
-        },
-        {
-          "x": 410,
-          "y": 220,
-          "type": "link",
-          "path": "/Applications"
-        }
-      ]
-    },
-    "publish": [
-      {
-        "provider": "github",
-        "owner": "alsabariosama-create",
-        "repo": "Al-Saabri-Investment-"
-      }
-    ]
+      "shortcutName": "نظام إدارة الاستثمار",
+      "installerIcon": "assets/app-icon-new.ico",
+      "uninstallerIcon": "assets/app-icon-new.ico",
+      "installerHeaderIcon": "assets/app-icon-new.ico",
+      "language": "1025"
+    }
   }
 }

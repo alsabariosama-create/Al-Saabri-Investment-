@@ -5,11 +5,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>اداره الاستثمار السعبري | Al-Saabri Investment Management</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="نظام إدارة الاستثمار السعبري - تطبيق شامل لإدارة الاستثمارات والمستثمرين">
+    <meta name="keywords" content="استثمار، إدارة، مالية، العراق، السعبري">
+    <meta name="author" content="Osama Al-Saabri">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="الاستثمار السعبري">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta name="msapplication-TileImage" content="assets/app-icon.png">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Icons for different devices -->
+    <link rel="icon" type="image/x-icon" href="icon.ico">
+    <link rel="apple-touch-icon" href="assets/app-icon.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="assets/app-icon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/app-icon.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="assets/app-icon.png">
+    
+    <!-- Stylesheets -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="style.css" rel="stylesheet" />
+    
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 
 
     <!-- إضافة مكتبات Firebase -->
@@ -2606,7 +2631,141 @@
 <!-- إضافة مكتبة Chart.js (إذا لم تكن موجودة بالفعل) -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <!-- PWA Installation and Service Worker Registration -->
+    <script>
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then((registration) => {
+                        console.log('SW registered: ', registration);
+                        
+                        // Check for updates
+                        registration.addEventListener('updatefound', () => {
+                            const newWorker = registration.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    // New version available
+                                    showUpdateAvailable();
+                                }
+                            });
+                        });
+                    })
+                    .catch((registrationError) => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
 
+        // PWA Install Prompt
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log('PWA install prompt triggered');
+            e.preventDefault();
+            deferredPrompt = e;
+            showInstallButton();
+        });
+
+        // Show install button
+        function showInstallButton() {
+            const installButton = document.createElement('button');
+            installButton.innerHTML = '<i class="fas fa-download"></i> تثبيت التطبيق';
+            installButton.className = 'btn btn-primary install-btn';
+            installButton.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 1000;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                animation: pulse 2s infinite;
+            `;
+            
+            installButton.addEventListener('click', async () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    console.log(`PWA install outcome: ${outcome}`);
+                    if (outcome === 'accepted') {
+                        installButton.remove();
+                    }
+                    deferredPrompt = null;
+                }
+            });
+            
+            document.body.appendChild(installButton);
+            
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (installButton.parentNode) {
+                    installButton.style.animation = 'fadeOut 0.5s ease-out forwards';
+                    setTimeout(() => installButton.remove(), 500);
+                }
+            }, 10000);
+        }
+
+        // Show update available notification
+        function showUpdateAvailable() {
+            const updateNotification = document.createElement('div');
+            updateNotification.innerHTML = `
+                <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); 
+                            background: #4CAF50; color: white; padding: 15px 25px; 
+                            border-radius: 8px; z-index: 1001; box-shadow: 0 4px 12px rgba(0,0,0,0.3);">
+                    <i class="fas fa-sync-alt"></i> تحديث جديد متاح
+                    <button onclick="window.location.reload()" 
+                            style="margin-right: 15px; background: white; color: #4CAF50; 
+                                   border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer;">
+                        تحديث الآن
+                    </button>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="margin-right: 10px; background: transparent; color: white; 
+                                   border: 1px solid white; padding: 5px 15px; border-radius: 4px; cursor: pointer;">
+                        لاحقاً
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(updateNotification);
+        }
+
+        // Handle app installation
+        window.addEventListener('appinstalled', (evt) => {
+            console.log('PWA was installed');
+            // Track installation
+            if (window.gtag) {
+                gtag('event', 'pwa_install', {
+                    event_category: 'engagement',
+                    event_label: 'PWA Install'
+                });
+            }
+        });
+
+        // Add keyboard shortcuts for PWA
+        document.addEventListener('keydown', (e) => {
+            // Ctrl/Cmd + I for install prompt
+            if ((e.ctrlKey || e.metaKey) && e.key === 'i' && deferredPrompt) {
+                e.preventDefault();
+                showInstallButton();
+            }
+        });
+
+        // Add pulse animation for install button
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+            @keyframes fadeOut {
+                from { opacity: 1; }
+                to { opacity: 0; }
+            }
+            .install-btn:hover {
+                transform: scale(1.05) !important;
+                animation: none !important;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
 
 
 </body>

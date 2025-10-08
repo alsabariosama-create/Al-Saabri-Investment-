@@ -1,0 +1,143 @@
+{
+  "name": "إدارة الاستثمار السعبري",
+  "short_name": "الاستثمار السعبري",
+  "description": "نظام إدارة الاستثمار والمستثمرين",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+  "lang": "ar",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "assets/icons/16x16/temp.svg",
+      "sizes": "16x16",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/32x32/temp.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/48x48/temp.svg",
+      "sizes": "48x48",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/64x64/temp.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/128x128/temp.svg",
+      "sizes": "128x128",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/256x256/temp.svg",
+      "sizes": "256x256",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icons/512x512/temp.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/app-icon.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/app-icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "categories": ["finance", "business", "productivity"],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/desktop.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "لوحة التحكم الرئيسية"
+    },
+    {
+      "src": "assets/screenshots/mobile.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow",
+      "label": "التطبيق على الهاتف"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "لوحة التحكم",
+      "short_name": "الرئيسية",
+      "description": "الوصول السريع للوحة التحكم",
+      "url": "/index.html#dashboard",
+      "icons": [
+        {
+          "src": "assets/icons/128x128/temp.svg",
+          "sizes": "128x128"
+        }
+      ]
+    },
+    {
+      "name": "المستثمرين",
+      "short_name": "المستثمرين",
+      "description": "إدارة المستثمرين",
+      "url": "/index.html#investors",
+      "icons": [
+        {
+          "src": "assets/icons/128x128/temp.svg",
+          "sizes": "128x128"
+        }
+      ]
+    },
+    {
+      "name": "الاستثمارات",
+      "short_name": "الاستثمارات",
+      "description": "إدارة الاستثمارات",
+      "url": "/index.html#investments",
+      "icons": [
+        {
+          "src": "assets/icons/128x128/temp.svg",
+          "sizes": "128x128"
+        }
+      ]
+    },
+    {
+      "name": "التقارير",
+      "short_name": "التقارير",
+      "description": "عرض التقارير والتحليلات",
+      "url": "/index.html#reports",
+      "icons": [
+        {
+          "src": "assets/icons/128x128/temp.svg",
+          "sizes": "128x128"
+        }
+      ]
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.alsaabri.investment",
+      "id": "com.alsaabri.investment"
+    }
+  ],
+  "prefer_related_applications": false
+}
